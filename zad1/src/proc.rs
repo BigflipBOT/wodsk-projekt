@@ -42,3 +42,34 @@ pub enum ProcessState {
     Finished,   // process is completed (finished)
     Unborn,     // process is not yet spawned 
 }
+
+pub fn all_is_finished<'a>(processes: &'a Vec<Process>) -> bool {
+    processes.iter().all(|process| process.state() == ProcessState::Finished)
+    // for process in processes {
+    //     if process.state() != ProcessState::Finished {
+    //         return false; 
+    //     }
+    // }
+    // return true;
+}
+
+pub fn check_arrival(processes: &mut Vec<Process>, cur_time: u64) -> usize {
+    let mut counter: usize = 0;
+    for process in processes.iter_mut() {
+        if process.state() == ProcessState::Unborn {
+            if process.arrival() <= cur_time {
+                (*process).deactivate();
+                counter += 1;
+            }
+        }
+    }
+    counter
+}
+
+pub fn avg_wait_time(processes: &Vec<Process>) -> f64 {
+    let mut sum: f64 = 0.0;
+    for process in processes.iter() {
+        sum += process.standby_time() as f64;
+    }
+    sum / (processes.len() as f64)
+}
