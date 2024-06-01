@@ -3,11 +3,12 @@ use crate::proc::ProcessState;
 use crate::proc::all_is_finished;
 use crate::proc::check_arrival;
 use crate::proc::avg_wait_time;
+use crate::proc::processor_tick;
 
 use std::cell::RefCell;
 use std::usize;
 
-pub fn round_robin(mut dataset: Vec<Process>) -> u64 {
+pub fn round_robin(mut dataset: Vec<Process>) -> f64 {
     let mut time: u64 = 0;
 
     let mut new_process_counter: usize = 0;
@@ -25,14 +26,21 @@ pub fn round_robin(mut dataset: Vec<Process>) -> u64 {
             if process.state() == ProcessState::Inactive { process_que.push(RefCell::new(*process)) }
         }
 
-        while process_que.iter().all(|process| (process.borrow()).state() != ProcessState::Finished) {
-            let mut iterations = 0;
-            process_que[iterations].borrow_mut().increment();
+        for process in process_que.iter_mut() {
+            println!("some process activated");
+            process.borrow_mut().activate();
+            for _i in 0..kwant {
+               if process.borrow().state() == ProcessState::Finished {
+                   println!("process finished before time limit");
+                   break;
+               }
+               processor_tick(&mut dataset, &mut time);
+               println!("{}", time);
+            }
+            process.borrow_mut().deactivate();
         }
-        //
-        time += 1;
     }
-
-    unimplemented!();
+    
+    avg_wait_time(&dataset)
 }
 

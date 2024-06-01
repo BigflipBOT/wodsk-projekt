@@ -33,5 +33,6 @@ fn main() {
     println!("avg response time for fcfs: {}", fcfs(data.clone()));
     println!("avg response time for sjf_nw: {}", sjf_nw(data.clone()));
     println!("avg response time for sjf_w: {}", sjf_w(data.clone()));
+    println!("avg response time for round_robin: {}", round_robin(data.clone()));
 
 }
