@@ -1,9 +1,13 @@
+// use std::os::unix::process;
 #![allow(dead_code)]
+use std::process;
+// use std::{fs, env};
+// use std::io::{self, BufRead};
+// use std::env;
+// use std::process;
+
 pub mod proc;
 use crate::proc::Process;
-use crate::proc::ProcessState;
-use crate::proc::all_is_finished;
-use crate::proc::check_arrival;
 
 pub mod fcfs;
 use crate::fcfs::fcfs;
@@ -25,6 +29,9 @@ fn import_data (data: &mut Vec<Process>) {
     data.push(Process::new(5, 1));
     data.push(Process::new(12, 3));
     data.push(Process::new(19, 1));
+    // process::exit(-1);
+    // let file
+    
 }
 
 fn main() {
@@ -33,6 +40,6 @@ fn main() {
     println!("avg response time for fcfs: {}", fcfs(data.clone()));
     println!("avg response time for sjf_nw: {}", sjf_nw(data.clone()));
     println!("avg response time for sjf_w: {}", sjf_w(data.clone()));
-    println!("avg response time for round_robin: {}", round_robin(data.clone()));
 
+    process::exit(0);
 }

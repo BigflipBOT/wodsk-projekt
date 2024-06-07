@@ -3,7 +3,6 @@ use crate::proc::ProcessState;
 use crate::proc::all_is_finished;
 use crate::proc::check_arrival;
 use crate::proc::avg_wait_time;
-use crate::proc::processor_tick;
 
 pub fn sjf_nw(mut dataset: Vec<Process>) -> f64 {
     let mut time: u64 = 0;
@@ -18,18 +17,29 @@ pub fn sjf_nw(mut dataset: Vec<Process>) -> f64 {
             }
         }    
 
-        processor_tick(&mut dataset, &mut time);
+        for process in dataset.iter_mut() {
+            (*process).increment();
+        }
+        time += 1;
     }
     avg_wait_time(&dataset)    
 }
 
-pub fn sjf_w(mut dataset: Vec<Process>) -> f64 { // TOdo ask if alghoritm is corect (about weight system)
+pub fn sjf_w(mut dataset: Vec<Process>) -> f64 { // TOdo ask if alghoritm is corect (about weightsystem)
    let mut time: u64 = 0;
 
     while !all_is_finished(&dataset) {
         check_arrival(&mut dataset, time);
         
         //alghoritm
+        // if let Some(shortest_process) = dataset.iter_mut().filter(|process| process.state() == ProcessState::Inactive).min_by_key(|process| process.length()) {
+        //     // change the state of the shortest inactive process to activa                                           this code below (.min_by_key(...)) is kind of hacky solltution to keep compiler happy
+        //     if let Some(active_process) = dataset.iter_mut().filter(|process| process.state() == ProcessState::Active).min_by_key(|process| process.length()) {
+        //         // change the state of the shortest inactive process to active
+        //         active_process.activate();
+        //     }
+        //     shortest_process.activate();
+        // }
         if let Some(active_process) = dataset.iter_mut().filter(|process| process.state() == ProcessState::Active).min_by_key(|proc| proc.length()) {
             active_process.deactivate();
         }
@@ -40,7 +50,11 @@ pub fn sjf_w(mut dataset: Vec<Process>) -> f64 { // TOdo ask if alghoritm is cor
         }    
         //if the currently active alghoritm was shortest nothing changes after above 8 lines
 
-        processor_tick(&mut dataset, &mut time);
+
+        for process in dataset.iter_mut() {
+            (*process).increment();
+        }
+        time += 1;
     }
     avg_wait_time(&dataset)
 }

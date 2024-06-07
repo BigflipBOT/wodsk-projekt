@@ -73,9 +73,3 @@ pub fn avg_wait_time(processes: &Vec<Process>) -> f64 {
     }
     sum / (processes.len() as f64)
 }
-pub fn processor_tick (processes: &mut Vec<Process>, time: &mut u64) { //kind of simulating passing time
-    for process in processes.iter_mut() {
-        (*process).increment();
-    }
-    *time += 1;
-}
