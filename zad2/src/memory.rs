@@ -1,12 +1,12 @@
 use u64 as IdType; // for clarity
+use u64 as StepType;
 use std::cell::RefCell;
-use std::cell::Ref;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Page {
     page_id: IdType, // id (name of the page). there can only be one page with given id
     page_usage: u64, // how much was this page used
-    page_recent_u: u64, // when was this page last used
+    page_recent_u: StepType, // when was this page last used
 }
 impl Page {
     pub fn new(id: IdType) -> Self {
@@ -18,45 +18,73 @@ impl Page {
     pub fn get_recent_usage(&self) -> u64 {
         self.page_recent_u
     }
+    pub fn use_page(&mut self, curr_step: StepType) {
+        self.page_recent_u = curr_step; // set last usage time
+        self.page_usage = self.page_usage + 1; // increment usage
+    }
 }
 
 pub struct MemSim {
-    page_list: Vec<RefCell<Page>>, // vec is easier thatn array cuz it can be empty :heareyes:
-    // needed: IdType, // zero will be treaded as null
-    page_fault: IdType,
-    step: u64,
+    page_id_list: Vec<IdType>,
+    page_fault: u64,
+    step: StepType,
     max_capacity: u64,
 }
 impl MemSim {
     pub fn new( max_cap: u64, ) -> Self {
-        MemSim { page_list: Vec::new(), page_fault: 0, step: 0, max_capacity: max_cap  }
+        MemSim { page_id_list: Vec::new(), page_fault: 0, step: 0, max_capacity: max_cap  }
+    }
+    pub fn get_page_list(&self, full_list: Vec<Page>) -> Vec<Page> {
+        full_list.into_iter()
+            .filter(|page| self.page_id_list.contains(&page.page_id))
+            .collect()
+    }
+    pub fn get_step(&self) -> StepType {
+        self.step
+    } 
+    pub fn get_page_fault(&self) -> u64 {
+        self.page_fault
     }
     fn page_fault(&mut self) {
         self.page_fault = self.page_fault+1;
     }
-    fn check_missing(&mut self, needed: Ref<Page>) -> bool {
+    fn check_missing(&self, needed_id: IdType) -> bool {
         //bellow, checks if the self, contains checked value.
-        if self.page_list.iter().find(|value| value.borrow().page_id == needed.page_id).is_some() {
+        if self.page_id_list.iter().find(|value| **value == needed_id).is_some() {
             return false
         }
-        self.page_fault();
         return true
     }
-    pub fn increment(&mut self, needed: IdType, next_to_swap: IdType) {
-        // i can only compare ID's, no need to pass pointers to the whole objects!
-        // kind of makes things easier than what i tried before...
-        unimplemented!();
+    pub fn increment(&mut self, /*_full_page_table: RefCell<Vec<Page>>,*/ needed: IdType, next_to_swap: IdType) {
+        // checking if there is a needed page already loaded
+        if self.check_missing(needed) {
+            self.page_fault();
+            println!("needed: {needed} | missing: {needed}");
+
+            // loading in page when there is space
+            if self.page_id_list.len() < self.max_capacity.try_into().unwrap() {
+                self.page_id_list.push(needed)
+            }
+            else { // and when there is no space left:
+                // swapping 'next_to_swap' for 'needed'
+                for sex in &mut self.page_id_list {
+                    if *sex == next_to_swap {
+                        *sex = needed;
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            println!("needed: {needed} | missing: _");
+        }
+        
+        // full_page_table.borrow_mut().iter().find(|page| page.page_id == needed).unwrap
+        
+        // unimplemented!();// page.use_page() goes here! // or not. can be used in main functuin
+        // for esaier implementation
+        
+        // simulating time passage
+        self.step = self.step + 1;
     }
-    // pub fn increment(&mut self, needed: RefCell<Page>, next: IdType) {
-    //     // next field is the next thing that should be swapped if needed
-    //     // if there is nothing missing, "next" parameter, should be ignored
-    //     let is_missing = self.check_missing(needed.borrow());
-    //     if is_missing {
-    //         if let Some(index) = self.page_list.iter().position(|value| value.borrow().page_id == next){ //this is kind of unsafe cuz when there is no next, program crashes (?)
-    //             // self.page_list.swap_remove(index); // release space for next page (replacing one with other is hard, and order doesn't matter)
-    //             // self.page_list.push(needed)
-    //             self.page_list[index] = needed; //is it too good to be true?
-    //         }                                                                            
-    //     }
-    // }
-}
+} 
