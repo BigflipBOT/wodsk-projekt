@@ -36,8 +36,8 @@ def main():
         second_range = (second_min, second_max)
 
         result = generate_pairs(num_pairs, increase_range, second_range)
-        print("Generated pairs:")
-        print(result)
+        print("Generated pairs")
+        # print(result)
         
         save_to_file(result, file_name)
     
