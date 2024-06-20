@@ -35,6 +35,9 @@ impl Process {
     pub fn completion(&self) -> u64 {
         self.completion
     }
+    pub fn time_left(&self) -> u64 {
+        self.length - self.completion
+    }
     pub fn standby_time(&self) -> u64 { self.standby_time }
     pub fn length(&self) -> u64 { self.length }
 }
