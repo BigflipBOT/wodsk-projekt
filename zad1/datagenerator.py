@@ -22,10 +22,10 @@ def save_to_file(data, file_name):
 def main():
     try:
         num_pairs = int(input("Enter the number of pairs to generate: "))
-        increase_min = int(input("Enter the minimum value for increase range of the first number: "))
-        increase_max = int(input("Enter the maximum value for increase range of the first number: "))
-        second_min = int(input("Enter the minimum value for the second number range: "))
-        second_max = int(input("Enter the maximum value for the second number range: "))
+        increase_min = int(input("Enter the minimum value for increase of the arrival time: "))
+        increase_max = int(input("Enter the maximum value for increase of the arrival time: "))
+        second_min = int(input("Enter the minimum value for the process lenght: "))
+        second_max = int(input("Enter the maximum value for the process lenght: "))
         file_name = input("Enter the name of the file to save the data: ")
 
         if increase_min > increase_max or second_min > second_max:
