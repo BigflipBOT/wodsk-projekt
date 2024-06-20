@@ -1,0 +1,4 @@
+data loaded correctly.
+avg response time for fcfs: 177.53
+avg response time for sjf_nw: 133.22
+avg response time for sjf_w: 132.96
