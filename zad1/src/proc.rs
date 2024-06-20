@@ -45,12 +45,6 @@ pub enum ProcessState {
 
 pub fn all_is_finished<'a>(processes: &'a Vec<Process>) -> bool {
     processes.iter().all(|process| process.state() == ProcessState::Finished)
-    // for process in processes {
-    //     if process.state() != ProcessState::Finished {
-    //         return false; 
-    //     }
-    // }
-    // return true;
 }
 
 pub fn check_arrival(processes: &mut Vec<Process>, cur_time: u64) -> usize {

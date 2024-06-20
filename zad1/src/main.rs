@@ -29,9 +29,6 @@ fn import_data (data: &mut Vec<Process>) {
     data.push(Process::new(5, 1));
     data.push(Process::new(12, 3));
     data.push(Process::new(19, 1));
-    // process::exit(-1);
-    // let file
-    
 }
 
 fn main() {
