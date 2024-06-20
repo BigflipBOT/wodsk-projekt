@@ -2,13 +2,17 @@
 pub mod memory;
 use u64 as IdType;
 use crate::memory::Page;
-use crate::memory::MemSim;
-use std::cell::RefCell;
+// use crate::memory::MemSim;
+// use std::cell::RefCell;
 
 pub mod fifo;
 use crate::fifo::*;
 pub mod lru;
-use crate::lru::*;
+use crate::lru::lru;
+pub mod lfu;
+use crate::lfu::lfu;
+pub mod mfu;
+use crate::mfu::mfu;
 
 fn load_data() -> (Vec<Page>, Vec<IdType>){
     let reference_table: Vec<IdType> = vec![1,2,3,4,1,2,5,1,2,3,4,5]; // kolejność odwołań
@@ -27,5 +31,8 @@ fn main() {
     // println!("{:?}", page_tab);
     // println!("{:?}", ref_tab);
 
-    println!("lru, page_fault: {:?}",lru::lru(page_tab, ref_tab, 3));
+    println!("lru, page_fault: {:?}",lru(page_tab.clone(), ref_tab.clone(), 3));
+    println!("lfu, page_fault: {:?}",lfu(page_tab.clone(), ref_tab.clone(), 3));
+    // println!("mfu, page_fault: {:?}",mfu(page_tab.clone(), ref_tab.clone(), 3)); // works
+    // uncorrectly!
 }

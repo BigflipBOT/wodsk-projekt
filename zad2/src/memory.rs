@@ -18,6 +18,9 @@ impl Page {
     pub fn get_recent_usage(&self) -> u64 {
         self.page_recent_u
     }
+    pub fn get_usage(&self) -> u64 {
+        self.page_usage
+    }
     pub fn use_page(&mut self, curr_step: StepType) {
         self.page_recent_u = curr_step; // set last usage time
         self.page_usage = self.page_usage + 1; // increment usage
@@ -28,10 +31,10 @@ pub struct MemSim {
     page_id_list: Vec<IdType>,
     page_fault: u64,
     step: StepType,
-    max_capacity: u64,
+    max_capacity: usize,
 }
 impl MemSim {
-    pub fn new( max_cap: u64, ) -> Self {
+    pub fn new( max_cap: usize, ) -> Self {
         MemSim { page_id_list: Vec::new(), page_fault: 0, step: 0, max_capacity: max_cap  }
     }
     pub fn get_page_list(&self, full_list: Vec<Page>) -> Vec<Page> {
@@ -51,24 +54,28 @@ impl MemSim {
     fn check_missing(&self, needed_id: IdType) -> bool {
         //bellow, checks if the self, contains checked value.
         if self.page_id_list.iter().find(|value| **value == needed_id).is_some() {
+            // print!("check_missing false");
             return false
         }
         return true
     }
     pub fn increment(&mut self, /*_full_page_table: RefCell<Vec<Page>>,*/ needed: IdType, next_to_swap: IdType) {
+        // print!("{0} || {next_to_swap} || {needed} || ", self.step);
         // checking if there is a needed page already loaded
         if self.check_missing(needed) {
             self.page_fault();
             println!("needed: {needed} | missing: {needed}");
 
             // loading in page when there is space
-            if self.page_id_list.len() < self.max_capacity.try_into().unwrap() {
+            if self.page_id_list.len() < self.max_capacity {
                 self.page_id_list.push(needed)
             }
             else { // and when there is no space left:
                 // swapping 'next_to_swap' for 'needed'
                 for sex in &mut self.page_id_list {
+                    // print!("| {sex} ");
                     if *sex == next_to_swap {
+                        if next_to_swap == 0 { panic!("next_to_swap == 0"); }
                         *sex = needed;
                         break;
                     }
@@ -77,6 +84,12 @@ impl MemSim {
         }
         else {
             println!("needed: {needed} | missing: _");
+        }
+        // println!("");
+        let _ = self.page_id_list.iter().for_each(|x| print!("{} ",x));
+
+        if self.page_id_list.len() > self.max_capacity {
+            panic!("lenght exceeded max_capacity");
         }
         
         // full_page_table.borrow_mut().iter().find(|page| page.page_id == needed).unwrap
