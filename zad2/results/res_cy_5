@@ -1,0 +1,2 @@
+lru, page_fault: 5
+lfu, page_fault: 5

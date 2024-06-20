@@ -1,6 +1,5 @@
 use u64 as IdType; // for clarity
 use u64 as StepType;
-use std::cell::RefCell;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Page {
@@ -64,7 +63,7 @@ impl MemSim {
         // checking if there is a needed page already loaded
         if self.check_missing(needed) {
             self.page_fault();
-            println!("needed: {needed} | missing: {needed}");
+            // println!("needed: {needed} | missing: {needed}");
 
             // loading in page when there is space
             if self.page_id_list.len() < self.max_capacity {
@@ -72,21 +71,21 @@ impl MemSim {
             }
             else { // and when there is no space left:
                 // swapping 'next_to_swap' for 'needed'
-                for sex in &mut self.page_id_list {
-                    // print!("| {sex} ");
-                    if *sex == next_to_swap {
+                for id in &mut self.page_id_list {
+                    // print!("| {id} ");
+                    if *id == next_to_swap {
                         if next_to_swap == 0 { panic!("next_to_swap == 0"); }
-                        *sex = needed;
+                        *id = needed;
                         break;
                     }
                 }
             }
         }
         else {
-            println!("needed: {needed} | missing: _");
+            // println!("needed: {needed} | missing: _");
         }
         // println!("");
-        let _ = self.page_id_list.iter().for_each(|x| print!("{} ",x));
+        // let _ = self.page_id_list.iter().for_each(|x| print!("{} ",x));
 
         if self.page_id_list.len() > self.max_capacity {
             panic!("lenght exceeded max_capacity");
