@@ -32,7 +32,7 @@ pub fn sjf_w(mut dataset: Vec<Process>) -> f64 {
         check_arrival(&mut dataset, time);
         
         //alghoritm
-        if let Some(active_process) = dataset.iter_mut().filter(|process| process.state() == ProcessState::Active).min_by_key(|proc| proc.length()) {
+        if let Some(active_process) = dataset.iter_mut().filter(|process| process.state() == ProcessState::Active).min_by_key(|proc| proc.length()-proc.completion()) {
             active_process.deactivate();
         }
         if dataset.iter().all(|process| process.state() != ProcessState::Active) { // the same alghoritm as for sjf_nw

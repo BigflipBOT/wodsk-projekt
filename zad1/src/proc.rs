@@ -32,6 +32,9 @@ impl Process {
     pub fn arrival(&self) -> u64 {
         self.arrival_time
     }
+    pub fn completion(&self) -> u64 {
+        self.completion
+    }
     pub fn standby_time(&self) -> u64 { self.standby_time }
     pub fn length(&self) -> u64 { self.length }
 }
