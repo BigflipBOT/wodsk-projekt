@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use std::process;
 
 pub mod proc;
@@ -9,8 +8,6 @@ use crate::fcfs::fcfs;
 pub mod sjf;
 use crate::sjf::sjf_w;
 use crate::sjf::sjf_nw;
-// pub mod rr;
-// use crate::rr::round_robin;
 
 use std::env;
 use std::fs::File;
@@ -71,7 +68,7 @@ fn main() {
         Err(e) => eprintln!("Failed to import data: {}", e),
     }
 
-
+    // run every alghoritm and display test data
     println!("avg response time for fcfs: {}", fcfs(data.clone()));
     println!("avg response time for sjf_nw: {}", sjf_nw(data.clone()));
     println!("avg response time for sjf_w: {}", sjf_w(data.clone()));

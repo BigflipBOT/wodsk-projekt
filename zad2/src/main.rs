@@ -1,24 +1,17 @@
 pub mod memory;
-use u64 as IdType;
+use u64 as IdType; // for clarity and readability
 use crate::memory::Page;
-// use crate::memory::MemSim;
-// use std::cell::RefCell;
 
-// pub mod fifo;
-// use crate::fifo::*;
 pub mod lru;
 use crate::lru::lru;
 pub mod lfu;
 use crate::lfu::lfu;
-// pub mod mfu;
-// use crate::mfu::mfu;
 
 use std::env;
 use std::fs::File;
 use std::io::{self, BufRead};
-// use std::path::Path;
 
-
+// Function to load data from a file and initialize the pages
 fn load_data(filename: &str, size: usize) -> (Vec<Page>, Vec<IdType>, usize) {
     // Read file content into input_table
     let input_table: Vec<IdType> = {
@@ -55,13 +48,17 @@ fn main() {
     let filename = &args[1];
     let size: usize = args[2].parse().expect("Invalid size value");
 
+    // Load data from the specified file
     let (page_tab, ref_tab, size) = load_data(filename, size);
 
+    // Uncomment to print the pages and reference table for debugging
     // println!("{:?}", page_tab);
     // println!("{:?}", ref_tab);
 
-    println!("lru, page_fault: {:?}",lru(page_tab.clone(), ref_tab.clone(), size));
-    println!("lfu, page_fault: {:?}",lfu(page_tab.clone(), ref_tab.clone(), size));
-    // println!("mfu, page_fault: {:?}",mfu(page_tab.clone(), ref_tab.clone(), 3)); // works
-    // uncorrectly!
+    // Run the LRU page replacement algorithm and print the result
+    println!("lru, page_fault: {:?}", lru(page_tab.clone(), ref_tab.clone(), size));
+    
+    // Run the LFU page replacement algorithm and print the result
+    println!("lfu, page_fault: {:?}", lfu(page_tab.clone(), ref_tab.clone(), size));
 }
+
